@@ -1,17 +1,49 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
-	"github.com/gofiber/fiber/v2"
+	"backend/server"
+
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	app := fiber.New()
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World 👋!")
+	// Configure base logging
+	logrus.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp:    true,
+		PadLevelText:     true,
+		QuoteEmptyFields: true,
 	})
+	logrus.SetLevel(logrus.DebugLevel)
 
-	_ = app.Listen(":"+ os.Getenv("INST_PORT"))
+	// Instantiate the Fiber REST API server and DB connection
+	app, serverPort, dbConn := server.InitServer()
+
+	// Configure graceful shutdown of the server
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
+
+	go func() {
+		<-quit
+		logrus.Infof("Gracefully shutting down the server")
+
+		if err := app.Shutdown(); err != nil {
+			logrus.Fatalf("Failed to gracefully shut down the server: %s", err)
+		}
+
+		if err := dbConn.Close(); err != nil {
+			logrus.Fatalf("Failed to gracefully disconnect from the DB: %s", err)
+		}
+	}()
+
+	// Start the server
+	if err := app.Listen(fmt.Sprintf(":%d", serverPort)); err != nil {
+		logrus.Fatalf("Failed to start the server: %s", err)
+	}
+
+	logrus.Infof("Server shut down complete")
 }

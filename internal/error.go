@@ -95,7 +95,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 	case *Error: // Handle a backend error
 		// Log the error
 		logDebugErrors(
-			"| BackendError :: File:%s - Line:%d :: %s -> %v", e.Location.File, e.Location.Line, e.Message, e.Original,
+			"BackendError :: File:%s - Line:%d :: %s -> %v", e.Location.File, e.Location.Line, e.Message, e.Original,
 		)
 
 		// Construct the response
@@ -117,7 +117,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 	}
 
 	// Log the current request's response
-	LogRequestResponse(code, c.Method(), c.Path(), message)
+	LogRequestResponse(code, c.IP(), c.Method(), c.Path(), message)
 
 	// Send the error response
 	if err := c.Status(code).JSON(fiber.Map{
@@ -126,7 +126,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 		"data":    nil,
 	}); err != nil {
 		// Should never get here
-		LogRequestResponse(500, c.Method(), c.Path(), "Internal Server Error")
+		LogRequestResponse(500, c.IP(), c.Method(), c.Path(), "Internal Server Error")
 		return c.Status(500).SendString("Internal Server Error")
 	}
 

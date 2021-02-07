@@ -24,7 +24,7 @@ func configureFiber(app *fiber.App) {
 			return chainErr
 		}
 
-		internal.LogRequestResponse(c.Response().StatusCode(), c.Method(), c.Path(), formatErr)
+		internal.LogRequestResponse(c.Response().StatusCode(), c.IP(), c.Method(), c.Path(), formatErr)
 		return nil
 	})
 

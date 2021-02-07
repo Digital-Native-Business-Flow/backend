@@ -9,14 +9,16 @@ import (
 	"backend/server"
 
 	"github.com/sirupsen/logrus"
+	prefixed "github.com/t-tomalak/logrus-prefixed-formatter"
 )
 
 func main() {
 	// Configure base logging
-	logrus.SetFormatter(&logrus.TextFormatter{
-		FullTimestamp:    true,
-		PadLevelText:     true,
-		QuoteEmptyFields: true,
+	logrus.SetFormatter(&prefixed.TextFormatter{
+		DisableColors:   false,
+		TimestampFormat: "2006-01-02T15:04:05.000000000Z07:00",
+		FullTimestamp:   true,
+		ForceFormatting: true,
 	})
 	logrus.SetLevel(logrus.DebugLevel)
 

@@ -42,7 +42,7 @@ func (h *Handler) Login(c *fiber.Ctx) (err error) {
 	// Create token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 
-	// Generate encoded token and send it as response.
+	// Generate encoded token and send it as response
 	Token, err := token.SignedString([]byte(h.JwtSecret))
 	if err != nil {
 		return

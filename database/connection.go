@@ -27,7 +27,7 @@ func NewDBConnection(ctx context.Context, env *internal.Environ) *pg.DB {
 	err := db.Ping(ctx)
 	if err != nil {
 		log.Printf("%v", err)
-		log.Fatal("could not establish a DB connection in a timely manner")
+		log.Fatal("Could not establish a DB connection in a timely manner")
 	}
 
 	return db

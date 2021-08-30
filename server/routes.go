@@ -10,9 +10,6 @@ func assignRoutesAndHandlers(app *fiber.App, h *handler.Handler) {
 	// Index
 	app.Get("/", h.Index)
 
-	// Users processes management
-	app.Post("/login", h.Login)
-
-	// Restricted
-	app.Get("/restricted", h.Restricted)
+	// File upload
+	app.Post("/upload", h.Upload)
 }

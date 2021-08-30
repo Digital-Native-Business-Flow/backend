@@ -11,7 +11,8 @@ type (
 		ServerPort int           `required:"true" envconfig:"PORT"`
 		JwtSecret  string        `required:"true" envconfig:"SECRET_KEY"`
 		JwtExp     time.Duration `required:"true" envconfig:"JWT_EXP"`
-		DBAddr     string        `required:"true" envconfig:"DB_ADDR"`
+		DBHost     string        `required:"true" envconfig:"DB_HOST"`
+		DBPort     string        `required:"true" envconfig:"DB_PORT"`
 		DBUser     string        `required:"true" envconfig:"DB_USER"`
 		DBPass     string        `required:"true" envconfig:"DB_PASS"`
 		DBName     string        `required:"true" envconfig:"DB_NAME"`

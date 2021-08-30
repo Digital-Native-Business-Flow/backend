@@ -22,6 +22,13 @@ type (
 )
 
 const (
+	ErrBEMissingForm = "Missing multipart/form-data in request"
+
+	ErrBENotCSV       = "One or more uploaded files are not CSVs"
+	ErrBEFileOpen     = "Error occurred while trying to open CSV file"
+	ErrBEFileClose    = "Error occurred while trying to close CSV file"
+	ErrBECSVUnmarshal = "Error occurred while trying to unmarshal CSV file"
+
 	ErrBEEmail           = "Error occurred while sending the invite email"
 	ErrBEHashSalt        = "Error occurred while generating salt for hashing the given password"
 	ErrBEInvalidInvite   = "The given invite token is no longer available"
@@ -109,7 +116,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 		case ErrBEEmail, ErrBEHashSalt, ErrBETimeConversion,
 			ErrDBDecode, ErrDBDelete, ErrDBInsert, ErrDBQuery, ErrDBUpdate:
 			code = fiber.StatusInternalServerError
-		case ErrBEInvalidInvite, ErrBEUserExists, ErrBEJwtBad,
+		case ErrBEInvalidInvite, ErrBEUserExists, ErrBEJwtBad, ErrBEMissingForm, ErrBENotCSV,
 			ErrBEQPInvalidChartType, ErrBEQPInvalidDateTime, ErrBEQPInvalidIsInside, ErrBEQPInvalidIntervalType,
 			ErrBEQPInvalidLocation, ErrBEQPInvalidMobile, ErrBEQPInvalidTimezone, ErrBEQPMissing, ErrBEQPNoRawOnGate:
 			code = fiber.StatusBadRequest

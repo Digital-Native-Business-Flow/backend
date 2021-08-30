@@ -1,26 +1,23 @@
 package server
 
 import (
-	"backend/security"
-	"context"
-	"time"
-
-	"backend/database"
-	"backend/internal"
-	"backend/server/handler"
-
-	"github.com/go-pg/pg/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
+
+	"backend/ent"
+	"backend/ent/connection"
+	"backend/internal"
+	"backend/server/handler"
 )
 
 // Initialize a Fiber server and DB connection
-func InitServer() (*fiber.App, int, *pg.DB) {
+func InitServer() (*fiber.App, int, *ent.Client) {
 	// Create a new Fiber instance
 	app := fiber.New(fiber.Config{
 		ErrorHandler:          internal.ErrorHandler,
 		Prefork:               false,
 		DisableStartupMessage: false,
+		BodyLimit:             100 * 1024 * 1024,
 	})
 
 	// Get configuration from environment
@@ -33,13 +30,10 @@ func InitServer() (*fiber.App, int, *pg.DB) {
 	configureFiber(app)
 
 	// Configure security
-	security.ConfigureSecurity(app, env)
+	//security.ConfigureSecurity(app, env)
 
 	// Create a DB connection
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	dbConn := database.NewDBConnection(ctx, env)
+	dbConn := connection.NewDBConnection(env)
 
 	// Configure the request validator
 	v, err := internal.NewValidator()
